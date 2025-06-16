@@ -6,107 +6,92 @@ const textoResultado = document.querySelector(".texto-resultado");
 
 const perguntas = [
     {
-        enunciado: "Assim que saiu da escola você se depara com uma nova tecnologia, um chat que consegue responder todas as dúvidas que uma pessoa pode ter, ele também gera imagens e áudios hiper-realistas. Qual o primeiro pensamento?",
+        enunciado: "Como você lida com a pressão do dia a dia?",
         alternativas: [
-            {
-                texto: "Isso é assustador!",
-                afirmacao: "No início ficou com medo do que essa tecnologia pode fazer. "
-            },
-            {
-                texto: "Isso é maravilhoso!",
-                afirmacao: "Quis saber como usar IA no seu dia a dia."
-            }
+            { texto: "Encaro como um desafio e tento manter o controle.", categoria: "Resiliente" },
+            { texto: "Me sinto sobrecarregado e busco formas de fuga.", categoria: "Estressado" }
         ]
     },
     {
-        enunciado: "Com a descoberta desta tecnologia, chamada Inteligência Artificial, uma professora de tecnologia da escola decidiu fazer uma sequência de aulas sobre esta tecnologia. No fim de uma aula ela pede que você escreva um trabalho sobre o uso de IA em sala de aula. Qual atitude você toma?",
+        enunciado: "O que você faz quando sente que está perdendo o equilíbrio emocional?",
         alternativas: [
-            {
-                texto: "Utiliza uma ferramenta de busca na internet que utiliza IA para que ela ajude a encontrar informações relevantes para o trabalho e explique numa linguagem que facilite o entendimento.",
-                afirmacao: "Conseguiu utilizar a IA para buscar informações úteis."
-            },
-            {
-                texto: "Escreve o trabalho com base nas conversas que teve com colegas, algumas pesquisas na internet e conhecimentos próprios sobre o tema.",
-                afirmacao: "Sentiu mais facilidade em utilizar seus próprios recursos para escrever seu trabalho."
-            }
+            { texto: "Busco técnicas de relaxamento ou apoio profissional.", categoria: "Autocuidado" },
+            { texto: "Tento ignorar os sentimentos até que passem.", categoria: "Evasivo" }
         ]
     },
     {
-        enunciado: "Após a elaboração do trabalho escrito, a professora realizou um debate entre a turma para entender como foi realizada a pesquisa e escrita. Nessa conversa também foi levantado um ponto muito importante: como a IA impacta o trabalho do futuro. Nesse debate, como você se posiciona?",
+        enunciado: "Quando enfrenta um obstáculo inesperado, qual sua reação mais comum?",
         alternativas: [
-            {
-                texto: "Defende a ideia de que a IA pode criar novas oportunidades de emprego e melhorar habilidades humanas.",
-                afirmacao: "Vem impulsionando a inovação na área de IA e luta para abrir novos caminhos profissionais com IA."
-            },
-            {
-                texto: "Me preocupo com as pessoas que perderão seus empregos para máquinas e defendem a importância de proteger os trabalhadores.",
-                afirmacao: "Sua preocupação com as pessoas motivou a criar um grupo de estudos entre trabalhadores para discutir meios de utilização de IA de forma ética."
-            }
+            { texto: "Procuro alternativas e sigo em frente com resiliência.", categoria: "Resiliente" },
+            { texto: "Fico paralisado e tenho dificuldade em encontrar soluções.", categoria: "Estressado" }
         ]
     },
     {
-        enunciado: "Ao final da discussão, você precisou criar uma imagem no computador que representasse o que pensa sobre IA. E agora?",
+        enunciado: "Como você percebe a sua própria felicidade?",
         alternativas: [
-            {
-                texto: "Criar uma imagem utilizando uma plataforma de design como o Paint.",
-                afirmacao: "Notou também que muitas pessoas não sabem ainda utilizar as ferramentas tradicionais e decidiu compartilhar seus conhecimentos de design utilizando ferramentas de pintura digital para iniciantes."
-            },
-            {
-                texto: "Criar uma imagem utilizando um gerador de imagem de IA.",
-                afirmacao: "Acelerou o processo de criação de trabalhos utilizando geradores de imagem e agora consegue ensinar pessoas que sentem dificuldades em desenhar manualmente como utilizar também!"
-            }
+            { texto: "Depende de minhas ações e escolhas diárias.", categoria: "Autocuidado" },
+            { texto: "Depende das circunstâncias externas e do que acontece ao meu redor.", categoria: "Evasivo" }
         ]
     },
     {
-        enunciado: "Você tem um trabalho em grupo de biologia para entregar na semana seguinte, o andamento do trabalho está um pouco atrasado e uma pessoa do seu grupo decidiu fazer com ajuda da IA. O problema é que o trabalho está totalmente igual ao do chat. O que você faz? ",
+        enunciado: "O que você prioriza em sua vida para sentir-se bem?",
         alternativas: [
-            {
-                texto: "Escrever comandos para o chat é uma forma de contribuir com o trabalho, por isso não é um problema utilizar o texto inteiro.",
-                afirmacao: "Infelizmente passou a utilizar a IA para fazer todas suas tarefas e agora se sente dependente da IA para tudo."
-            },
-            {
-                texto: "O chat pode ser uma tecnologia muito avançada, mas é preciso manter a atenção pois toda máquina erra, por isso revisar o trabalho e contribuir com as perspectivas pessoais é essencial.",
-                afirmacao: "Percebeu que toda IA reproduz orientações baseadas na empresa que programou e muito do que o chat escrevia não refletia o que pensava e por isso sabe que os textos gerados pela IA devem servir como auxílio e não resultado final. "
-            }
+            { texto: "Autoconhecimento e equilíbrio emocional.", categoria: "Autocuidado" },
+            { texto: "Sucesso material e reconhecimento dos outros.", categoria: "Evasivo" }
         ]
-    },
+    }
 ];
 
-
 let atual = 0;
-let perguntaAtual;
-let historiaFinal = "";
+let contagemCategorias = { Resiliente: 0, Estressado: 0, Autocuidado: 0, Evasivo: 0 };
 
 function mostraPergunta() {
     if (atual >= perguntas.length) {
         mostraResultado();
         return;
     }
-    perguntaAtual = perguntas[atual];
+    const perguntaAtual = perguntas[atual];
     caixaPerguntas.textContent = perguntaAtual.enunciado;
     caixaAlternativas.textContent = "";
-    mostraAlternativas();
+    mostraAlternativas(perguntaAtual.alternativas);
 }
 
-function mostraAlternativas(){
-    for(const alternativa of perguntaAtual.alternativas) {
+function mostraAlternativas(alternativas) {
+    alternativas.forEach(alternativa => {
         const botaoAlternativas = document.createElement("button");
         botaoAlternativas.textContent = alternativa.texto;
         botaoAlternativas.addEventListener("click", () => respostaSelecionada(alternativa));
         caixaAlternativas.appendChild(botaoAlternativas);
-    }
+    });
 }
 
 function respostaSelecionada(opcaoSelecionada) {
-    const afirmacoes = opcaoSelecionada.afirmacao;
-    historiaFinal += afirmacoes + " ";
+    contagemCategorias[opcaoSelecionada.categoria]++;
     atual++;
     mostraPergunta();
 }
 
 function mostraResultado() {
-    caixaPerguntas.textContent = "Em 2049...";
-    textoResultado.textContent = historiaFinal;
+    let categoriaFinal = Object.keys(contagemCategorias).reduce((a, b) => contagemCategorias[a] > contagemCategorias[b] ? a : b);
+
+    let mensagemFinal = "";
+    switch (categoriaFinal) {
+        case "Resiliente":
+            mensagemFinal = "Você tem uma abordagem resiliente diante dos desafios! Busque manter sua força emocional e compartilhe sua visão positiva com os outros.";
+            break;
+        case "Estressado":
+            mensagemFinal = "O estresse pode estar afetando sua vida. Considere buscar técnicas de relaxamento, apoio emocional e estratégias para lidar com as pressões do dia a dia.";
+            break;
+        case "Autocuidado":
+            mensagemFinal = "Você valoriza o autocuidado! Continue priorizando sua saúde mental e bem-estar, garantindo equilíbrio na sua rotina.";
+            break;
+        case "Evasivo":
+            mensagemFinal = "Você tende a evitar problemas em vez de enfrentá-los. Tente se conectar mais com suas emoções e buscar formas de resolver desafios de maneira ativa.";
+            break;
+    }
+
+    caixaPerguntas.textContent = "Seu resultado:";
+    textoResultado.textContent = mensagemFinal;
     caixaAlternativas.textContent = "";
 }
 
